@@ -9,6 +9,7 @@ interface AuthContextType {
   user: Pengguna | null;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
+  updateUser: (data: Partial<Pengguna>) => void;
   isLoading: boolean;
 }
 
@@ -40,8 +41,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
 
+  const updateUser = (data: Partial<Pengguna>) => {
+    if (user) {
+      const updatedUser = { ...user, ...data };
+      setUser(updatedUser);
+      localStorage.setItem('sia_user', JSON.stringify(updatedUser));
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

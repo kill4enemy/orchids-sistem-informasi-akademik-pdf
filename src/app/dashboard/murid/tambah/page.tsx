@@ -25,7 +25,7 @@ export default function TambahMuridPage() {
     jenisKelamin: 'L' as 'L' | 'P',
     tanggalLahir: '',
     alamat: '',
-    kelasId: '',
+    kelasId: 'none',
     namaOrangTua: '',
     noTelpOrangTua: '',
   });
@@ -59,7 +59,7 @@ export default function TambahMuridPage() {
     try {
       const payload = {
         ...formData,
-        kelasId: formData.kelasId ? parseInt(formData.kelasId) : null,
+        kelasId: formData.kelasId && formData.kelasId !== 'none' ? parseInt(formData.kelasId) : null,
       };
 
       const response = await fetch('/api/murid', {
@@ -174,7 +174,7 @@ export default function TambahMuridPage() {
                     <SelectValue placeholder="Pilih kelas" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Tidak ada kelas</SelectItem>
+                    <SelectItem value="none">Tidak ada kelas</SelectItem>
                     {kelasList.map((kelas) => (
                       <SelectItem key={kelas.id} value={kelas.id.toString()}>
                         {kelas.namaKelas} - {kelas.tahunAjaran}

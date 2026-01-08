@@ -7,6 +7,7 @@ export const pengguna = sqliteTable('pengguna', {
   password: text('password').notNull(),
   role: text('role').notNull(), // 'admin', 'guru', or 'murid'
   nama: text('nama').notNull(),
+  foto: text('foto'),
   createdAt: text('created_at').notNull(),
 });
 
@@ -43,5 +44,16 @@ export const murid = sqliteTable('murid', {
   kelasId: integer('kelas_id').references(() => kelas.id),
   namaOrangTua: text('nama_orang_tua'),
   noTelpOrangTua: text('no_telp_orang_tua'),
+  createdAt: text('created_at').notNull(),
+});
+
+// Nilai (Grades) table
+export const nilai = sqliteTable('nilai', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  muridId: integer('murid_id').notNull().references(() => murid.id),
+  mataPelajaran: text('mata_pelajaran').notNull(),
+  skor: integer('skor').notNull(),
+  tipe: text('tipe').notNull(), // 'Tugas', 'UTS', 'UAS'
+  tanggal: text('tanggal').notNull(),
   createdAt: text('created_at').notNull(),
 });

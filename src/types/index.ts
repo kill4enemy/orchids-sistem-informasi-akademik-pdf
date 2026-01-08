@@ -40,11 +40,29 @@ export interface Murid {
   createdAt: string;
 }
 
+export interface Nilai {
+  id: number;
+  muridId: number;
+  mataPelajaran: string;
+  skor: number;
+  tipe: string;
+  tanggal: string;
+  createdAt: string;
+}
+
 export interface Stats {
   penggunaCount: number;
   guruCount: number;
   kelasCount: number;
   muridCount: number;
+  avgGrade: string | null;
+  recentActivities: {
+    type: 'murid' | 'kelas';
+    title: string;
+    description: string;
+    time: string;
+    id: number;
+  }[];
 }
 
 // Form Types

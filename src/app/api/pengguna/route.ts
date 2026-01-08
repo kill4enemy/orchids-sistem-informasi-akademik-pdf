@@ -79,3 +79,35 @@ export async function GET(request: NextRequest) {
     }, { status: 500 });
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { id, nama, foto } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    }
+
+    const updateData: any = {};
+    if (nama !== undefined) updateData.nama = nama;
+    if (foto !== undefined) updateData.foto = foto;
+
+    const result = await db.update(pengguna)
+      .set(updateData)
+      .where(eq(pengguna.id, id))
+      .returning();
+
+    if (result.length === 0) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(result[0], { status: 200 });
+
+  } catch (error) {
+    console.error('PATCH error:', error);
+    return NextResponse.json({ 
+      error: 'Internal server error: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, { status: 500 });
+  }
+}

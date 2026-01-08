@@ -51,16 +51,16 @@ export default function EditMuridPage() {
 
       if (muridRes.ok) {
         const murid: Murid = await muridRes.json();
-        setFormData({
-          nisn: murid.nisn,
-          nama: murid.nama,
-          jenisKelamin: murid.jenisKelamin,
-          tanggalLahir: murid.tanggalLahir || '',
-          alamat: murid.alamat || '',
-          kelasId: murid.kelasId?.toString() || '',
-          namaOrangTua: murid.namaOrangTua || '',
-          noTelpOrangTua: murid.noTelpOrangTua || '',
-        });
+          setFormData({
+            nisn: murid.nisn,
+            nama: murid.nama,
+            jenisKelamin: murid.jenisKelamin,
+            tanggalLahir: murid.tanggalLahir || '',
+            alamat: murid.alamat || '',
+            kelasId: murid.kelasId?.toString() || 'none',
+            namaOrangTua: murid.namaOrangTua || '',
+            noTelpOrangTua: murid.noTelpOrangTua || '',
+          });
       }
 
       if (kelasRes.ok) {
@@ -81,7 +81,7 @@ export default function EditMuridPage() {
     try {
       const payload = {
         ...formData,
-        kelasId: formData.kelasId ? parseInt(formData.kelasId) : null,
+        kelasId: formData.kelasId && formData.kelasId !== 'none' ? parseInt(formData.kelasId) : null,
       };
 
       const response = await fetch(`/api/murid?id=${params.id}`, {
@@ -194,7 +194,7 @@ export default function EditMuridPage() {
                     <SelectValue placeholder="Pilih kelas" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Tidak ada kelas</SelectItem>
+                    <SelectItem value="none">Tidak ada kelas</SelectItem>
                     {kelasList.map((kelas) => (
                       <SelectItem key={kelas.id} value={kelas.id.toString()}>
                         {kelas.namaKelas} - {kelas.tahunAjaran}
