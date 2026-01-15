@@ -51,10 +51,10 @@ export default function TambahKelasPage() {
     e.preventDefault();
     setSaving(true);
 
-    try {
+      try {
       const payload = {
         ...formData,
-        waliKelasId: formData.waliKelasId ? parseInt(formData.waliKelasId) : null,
+        waliKelasId: formData.waliKelasId && formData.waliKelasId !== 'none' ? parseInt(formData.waliKelasId) : null,
       };
 
       const response = await fetch('/api/kelas', {
@@ -140,7 +140,7 @@ export default function TambahKelasPage() {
                     <SelectValue placeholder="Pilih wali kelas" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Tidak ada wali kelas</SelectItem>
+                    <SelectItem value="none">Tidak ada wali kelas</SelectItem>
                     {guruList.map((guru) => (
                       <SelectItem key={guru.id} value={guru.id.toString()}>
                         {guru.nama} - {guru.mataPelajaran}

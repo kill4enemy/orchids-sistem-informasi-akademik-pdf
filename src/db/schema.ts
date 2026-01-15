@@ -47,13 +47,21 @@ export const murid = sqliteTable('murid', {
   createdAt: text('created_at').notNull(),
 });
 
+// Permintaan Kelas (Class Requests) table
+export const permintaanKelas = sqliteTable('permintaan_kelas', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  muridId: integer('murid_id').notNull().references(() => murid.id),
+  kelasId: integer('kelas_id').notNull().references(() => kelas.id),
+  status: text('status').notNull().default('pending'), // 'pending', 'disetujui', 'ditolak'
+  createdAt: text('created_at').notNull(),
+});
+
 // Nilai (Grades) table
 export const nilai = sqliteTable('nilai', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   muridId: integer('murid_id').notNull().references(() => murid.id),
   mataPelajaran: text('mata_pelajaran').notNull(),
   skor: integer('skor').notNull(),
-  tipe: text('tipe').notNull(), // 'Tugas', 'UTS', 'UAS'
-  tanggal: text('tanggal').notNull(),
+  keterangan: text('keterangan'),
   createdAt: text('created_at').notNull(),
 });

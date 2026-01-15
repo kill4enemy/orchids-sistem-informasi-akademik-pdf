@@ -173,7 +173,7 @@ export default function LaporanPage() {
 
   if (isLoading || !user) {
     return (
-      <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
       </div>
     );
@@ -184,8 +184,8 @@ export default function LaporanPage() {
       <div className="space-y-8 animate-in fade-in duration-500">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 print:hidden">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white">Laporan Akademik</h1>
-            <p className="text-gray-500 mt-1">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">Laporan Akademik</h1>
+            <p className="text-muted-foreground mt-1">
               Generate dan cetak laporan data murid berdasarkan filter.
             </p>
           </div>
@@ -194,7 +194,7 @@ export default function LaporanPage() {
               variant="outline" 
               onClick={handleExportPDF}
               disabled={exporting || loading || filteredMurid.length === 0}
-              className="bg-[#141415] border-[#1a1a1b] text-gray-400 hover:text-white hover:bg-[#1a1a1b] disabled:opacity-50"
+              className="bg-card border-border text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-50"
             >
               {exporting ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -215,15 +215,15 @@ export default function LaporanPage() {
         </div>
 
         {/* Filter Bar */}
-        <div className="bg-[#141415] border border-[#1a1a1b] rounded-2xl p-6 print:hidden">
+        <div className="bg-card border border-border rounded-2xl p-6 print:hidden">
           <div className="flex flex-wrap items-center gap-6">
             <div className="space-y-1.5 flex-1 max-w-xs">
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wider ml-1">Pilih Kelas</label>
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider ml-1">Pilih Kelas</label>
               <Select value={selectedKelas} onValueChange={setSelectedKelas}>
-                <SelectTrigger className="bg-[#0a0a0b] border-[#1a1a1b] text-white focus:ring-1 focus:ring-gray-700">
+                <SelectTrigger className="bg-background border-border text-foreground focus:ring-1 focus:ring-ring">
                   <SelectValue placeholder="Pilih kelas..." />
                 </SelectTrigger>
-                <SelectContent className="bg-[#141415] border-[#1a1a1b] text-white">
+                <SelectContent className="bg-card border-border text-foreground">
                   <SelectItem value="all">Semua Kelas</SelectItem>
                   {kelasList.map((kelas) => (
                     <SelectItem key={kelas.id} value={kelas.id.toString()}>
@@ -234,8 +234,8 @@ export default function LaporanPage() {
               </Select>
             </div>
             <div className="space-y-1.5 flex-1 max-w-xs">
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wider ml-1">Periode Laporan</label>
-              <div className="flex items-center gap-2 bg-[#0a0a0b] border border-[#1a1a1b] rounded-md px-3 h-10 text-sm text-gray-400">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider ml-1">Periode Laporan</label>
+              <div className="flex items-center gap-2 bg-background border border-border rounded-md px-3 h-10 text-sm text-muted-foreground">
                 <CalendarIcon className="w-4 h-4" />
                 <span>Semester Ganjil 2023/2024</span>
               </div>
@@ -247,7 +247,7 @@ export default function LaporanPage() {
         <div 
           id="report-to-export"
           ref={reportRef}
-          className="bg-[#141415] border border-[#1a1a1b] rounded-2xl overflow-hidden print:bg-white print:border-none print:rounded-none print:shadow-none"
+          className="bg-card border border-border rounded-2xl overflow-hidden print:bg-white print:border-none print:rounded-none print:shadow-none"
         >
           {/* Print Header */}
           <div className="hidden print:block print-header-content text-center p-8 border-b-2 border-black mb-8 text-black">
@@ -268,8 +268,8 @@ export default function LaporanPage() {
                   <FileText className="w-5 h-5 text-blue-500" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold">Preview Laporan</h3>
-                  <p className="text-gray-500 text-xs">Total {filteredMurid.length} murid terdaftar</p>
+                  <h3 className="text-foreground font-semibold">Preview Laporan</h3>
+                  <p className="text-muted-foreground text-xs">Total {filteredMurid.length} murid terdaftar</p>
                 </div>
               </div>
             </div>
@@ -277,10 +277,10 @@ export default function LaporanPage() {
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
-                <p className="text-gray-500 text-sm">Menyiapkan laporan...</p>
+                <p className="text-muted-foreground text-sm">Menyiapkan laporan...</p>
               </div>
             ) : filteredMurid.length === 0 ? (
-              <div className="text-center py-20 text-gray-500">
+              <div className="text-center py-20 text-muted-foreground">
                 <FileText className="w-12 h-12 mx-auto mb-4 opacity-20" />
                 <p>Tidak ada data murid untuk kelas yang dipilih</p>
               </div>
@@ -288,26 +288,26 @@ export default function LaporanPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse print:text-black">
                   <thead>
-                    <tr className="border-b border-[#1a1a1b] bg-[#0a0a0b]/50 print:bg-gray-100 print:border-black">
-                      <th className="py-4 px-4 font-medium text-gray-400 text-xs uppercase tracking-wider print:text-black">No</th>
-                      <th className="py-4 px-4 font-medium text-gray-400 text-xs uppercase tracking-wider print:text-black">NISN</th>
-                      <th className="py-4 px-4 font-medium text-gray-400 text-xs uppercase tracking-wider print:text-black">Nama Lengkap</th>
-                      <th className="py-4 px-4 font-medium text-gray-400 text-xs uppercase tracking-wider print:text-black">L/P</th>
-                      <th className="py-4 px-4 font-medium text-gray-400 text-xs uppercase tracking-wider print:text-black">Tanggal Lahir</th>
-                      <th className="py-4 px-4 font-medium text-gray-400 text-xs uppercase tracking-wider print:text-black">Kelas</th>
-                      <th className="py-4 px-4 font-medium text-gray-400 text-xs uppercase tracking-wider print:text-black">Wali Murid</th>
+                    <tr className="border-b border-border bg-muted/50 print:bg-gray-100 print:border-black">
+                      <th className="py-4 px-4 font-medium text-muted-foreground text-xs uppercase tracking-wider print:text-black">No</th>
+                      <th className="py-4 px-4 font-medium text-muted-foreground text-xs uppercase tracking-wider print:text-black">NISN</th>
+                      <th className="py-4 px-4 font-medium text-muted-foreground text-xs uppercase tracking-wider print:text-black">Nama Lengkap</th>
+                      <th className="py-4 px-4 font-medium text-muted-foreground text-xs uppercase tracking-wider print:text-black">L/P</th>
+                      <th className="py-4 px-4 font-medium text-muted-foreground text-xs uppercase tracking-wider print:text-black">Tanggal Lahir</th>
+                      <th className="py-4 px-4 font-medium text-muted-foreground text-xs uppercase tracking-wider print:text-black">Kelas</th>
+                      <th className="py-4 px-4 font-medium text-muted-foreground text-xs uppercase tracking-wider print:text-black">Wali Murid</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#1a1a1b] print:divide-black">
+                  <tbody className="divide-y divide-border print:divide-black">
                     {filteredMurid.map((murid, index) => (
-                      <tr key={murid.id} className="hover:bg-[#1a1a1b]/30 transition-colors print:hover:bg-transparent">
-                        <td className="py-4 px-4 text-sm text-gray-400 print:text-black">{index + 1}</td>
-                        <td className="py-4 px-4 text-sm text-gray-300 font-mono print:text-black">{murid.nisn}</td>
-                        <td className="py-4 px-4 text-sm text-white font-medium print:text-black">{murid.nama}</td>
-                        <td className="py-4 px-4 text-sm text-gray-400 print:text-black">{murid.jenisKelamin}</td>
-                        <td className="py-4 px-4 text-sm text-gray-400 print:text-black">{murid.tanggalLahir || '-'}</td>
-                        <td className="py-4 px-4 text-sm text-gray-300 print:text-black">{getKelasName(murid.kelasId)}</td>
-                        <td className="py-4 px-4 text-sm text-gray-400 print:text-black">{murid.namaOrangTua || '-'}</td>
+                      <tr key={murid.id} className="hover:bg-muted/30 transition-colors print:hover:bg-transparent">
+                        <td className="py-4 px-4 text-sm text-muted-foreground print:text-black">{index + 1}</td>
+                        <td className="py-4 px-4 text-sm text-foreground/80 font-mono print:text-black">{murid.nisn}</td>
+                        <td className="py-4 px-4 text-sm text-foreground font-medium print:text-black">{murid.nama}</td>
+                        <td className="py-4 px-4 text-sm text-muted-foreground print:text-black">{murid.jenisKelamin}</td>
+                        <td className="py-4 px-4 text-sm text-muted-foreground print:text-black">{murid.tanggalLahir || '-'}</td>
+                        <td className="py-4 px-4 text-sm text-foreground/80 print:text-black">{getKelasName(murid.kelasId)}</td>
+                        <td className="py-4 px-4 text-sm text-muted-foreground print:text-black">{murid.namaOrangTua || '-'}</td>
                       </tr>
                     ))}
                   </tbody>

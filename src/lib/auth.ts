@@ -5,22 +5,19 @@ const AUTH_STORAGE_KEY = 'sia_user';
 export const authService = {
   async login(username: string, password: string): Promise<Pengguna | null> {
     try {
-      const response = await fetch(`/api/pengguna?username=${username}`);
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
       if (!response.ok) return null;
       
       const user: Pengguna = await response.json();
       
-      // Simple password verification (in production, verify with bcrypt on backend)
-      const bcrypt = await import('bcryptjs');
-      const isValid = await bcrypt.compare(password, user.password);
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
       
-      if (!isValid) return null;
-      
-      // Store user without password
-      const userWithoutPassword = { ...user, password: '' };
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userWithoutPassword));
-      
-      return userWithoutPassword;
+      return user;
     } catch (error) {
       console.error('Login error:', error);
       return null;

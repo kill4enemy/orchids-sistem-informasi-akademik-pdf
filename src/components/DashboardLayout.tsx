@@ -2,7 +2,7 @@
 
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { 
   LayoutDashboard, 
@@ -26,6 +26,9 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ProfilModal } from './ProfilModal';
+import { NotificationsSheet } from './NotificationsSheet';
+
+import { ModeToggle } from './ModeToggle';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -34,6 +37,7 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfilOpen, setIsProfilOpen] = useState(false);
@@ -48,7 +52,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const filteredNavItems = navItems.filter(item => item.access.includes(user?.role || ''));
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-white flex overflow-hidden relative">
+    <div className="min-h-screen bg-background text-foreground flex overflow-hidden relative">
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div 
@@ -59,7 +63,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Sidebar */}
       <aside className={cn(
-        "bg-[#0a0a0b] border-r border-[#1a1a1b] flex flex-col transition-all duration-300 z-50",
+        "bg-background border-r border-border flex flex-col transition-all duration-300 z-50",
         sidebarCollapsed ? "w-20" : "w-64",
         "fixed inset-y-0 left-0 lg:static transform",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
@@ -69,11 +73,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/20">
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
-            {!sidebarCollapsed && <span className="font-bold text-xl tracking-tight text-white">SIAKAD</span>}
+            {!sidebarCollapsed && <span className="font-bold text-xl tracking-tight">SIAKAD</span>}
           </Link>
           <button 
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="text-gray-500 hover:text-white transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             {sidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
           </button>
@@ -91,143 +95,160 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 className={cn(
                   "flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 group",
                   isActive 
-                    ? "bg-[#1a1a1b] text-white" 
-                    : "text-gray-500 hover:text-gray-300 hover:bg-[#141415]"
+                    ? "bg-accent text-accent-foreground" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                 )}
               >
-                <Icon className={cn("w-5 h-5", isActive ? "text-blue-500" : "group-hover:text-gray-300")} />
+                <Icon className={cn("w-5 h-5", isActive ? "text-blue-500" : "group-hover:text-foreground")} />
                 {!sidebarCollapsed && <span className="font-medium text-[15px]">{item.label}</span>}
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-[#1a1a1b] space-y-2">
-          <Link
-            href="/dashboard/settings"
-            onClick={() => setMobileMenuOpen(false)}
-            className={cn(
-              "w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 group",
-              pathname === '/dashboard/settings' 
-                ? "bg-[#1a1a1b] text-white" 
-                : "text-gray-500 hover:text-gray-300 hover:bg-[#141415]"
-            )}
-          >
-            <Settings className={cn("w-5 h-5", pathname === '/dashboard/settings' ? "text-blue-500" : "group-hover:text-gray-300")} />
-            {!sidebarCollapsed && <span className="font-medium text-[15px]">Settings</span>}
-          </Link>
-          
-          <button
-            onClick={() => {
-              setIsProfilOpen(true);
-              setMobileMenuOpen(false);
-            }}
-            className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-gray-500 hover:text-gray-300 hover:bg-[#141415] transition-all group"
-          >
-            <User className="w-5 h-5 group-hover:text-gray-300" />
-            {!sidebarCollapsed && <span className="font-medium text-[15px]">Profil</span>}
-          </button>
-
-          <button
-            onClick={logout}
-            className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-gray-500 hover:text-red-400 hover:bg-red-950/20 transition-all group"
-          >
-            <LogOut className="w-5 h-5 group-hover:text-red-400" />
-            {!sidebarCollapsed && <span className="font-medium text-[15px]">Logout</span>}
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Navbar */}
-        <header className="h-16 border-b border-[#1a1a1b] bg-[#0a0a0b]/80 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-20">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="lg:hidden h-9 w-9 text-gray-400 hover:text-white hover:bg-[#1a1a1b]"
-              onClick={() => setMobileMenuOpen(true)}
+        <div className="p-4 border-t border-border space-y-2">
+            <Link
+              href="/dashboard/settings"
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 group",
+                pathname === '/dashboard/settings' 
+                  ? "bg-accent text-accent-foreground" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+              )}
             >
-              <PanelLeftOpen className="w-5 h-5" />
-            </Button>
+              <Settings className={cn("w-5 h-5", pathname === '/dashboard/settings' ? "text-blue-500" : "group-hover:text-foreground")} />
+              {!sidebarCollapsed && <span className="font-medium text-[15px]">Settings</span>}
+            </Link>
             
-            <div className="hidden sm:flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-white hover:bg-[#1a1a1b]">
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-white hover:bg-[#1a1a1b]">
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
+            <button
+              onClick={() => {
+                setIsProfilOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all group"
+            >
+              <User className="w-5 h-5 group-hover:text-foreground" />
+              {!sidebarCollapsed && <span className="font-medium text-[15px]">Profil</span>}
+            </button>
 
-            <div className="h-4 w-px bg-[#1a1a1b] mx-2 hidden sm:block" />
-            <Button variant="ghost" className="text-gray-400 hover:text-white hover:bg-[#1a1a1b] text-sm hidden sm:flex items-center gap-2">
-              <Settings className="w-4 h-4" />
-              Configure
-            </Button>
+            <button
+              onClick={logout}
+              className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all group"
+            >
+              <LogOut className="w-5 h-5 group-hover:text-destructive" />
+              {!sidebarCollapsed && <span className="font-medium text-[15px]">Logout</span>}
+            </button>
           </div>
+        </aside>
 
-          <div className="flex items-center gap-6 flex-1 max-w-2xl justify-end">
-            <div className="relative w-full max-w-sm hidden md:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <Input 
-                placeholder="Search anything..." 
-                className="bg-[#141415] border-[#1a1a1b] pl-10 h-9 text-sm focus-visible:ring-1 focus-visible:ring-gray-700 w-full"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-[10px] font-medium text-gray-500 bg-[#1a1a1b] px-1.5 py-0.5 rounded border border-[#2a2a2b]">
-                <span>⌘</span>
-                <span>K</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white hover:bg-[#1a1a1b]">
-                <Bell className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white hover:bg-[#1a1a1b]">
-                <Sun className="w-5 h-5" />
-              </Button>
-              <div 
-                className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-teal-400 border border-[#1a1a1b] cursor-pointer hover:opacity-80 transition-opacity" 
-                title={user?.nama}
-                onClick={() => setIsProfilOpen(true)}
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Top Navbar */}
+          <header className="h-16 border-b border-border bg-background/80 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-20">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="lg:hidden h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent"
+                onClick={() => setMobileMenuOpen(true)}
               >
-                <div className="w-full h-full rounded-full overflow-hidden">
-                  {user?.foto ? (
-                    <img src={user.foto} alt="avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.nama}`} alt="avatar" />
-                  )}
+                <PanelLeftOpen className="w-5 h-5" />
+              </Button>
+              
+                <div className="hidden sm:flex items-center gap-1">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                    onClick={() => router.back()}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                    onClick={() => router.forward()}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                <div className="h-4 w-px bg-border mx-2 hidden sm:block" />
+                <Button 
+                  variant="ghost" 
+                  className="text-muted-foreground hover:text-foreground hover:bg-accent text-sm hidden sm:flex items-center gap-2"
+                  onClick={() => router.push('/dashboard/settings')}
+                >
+                  <Settings className="w-4 h-4" />
+                  Configure
+                </Button>
+            </div>
+
+            <div className="flex items-center gap-6 flex-1 max-w-2xl justify-end">
+              <div className="relative w-full max-w-sm hidden md:block">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Search anything..." 
+                  className="bg-secondary border-border pl-10 h-9 text-sm focus-visible:ring-1 focus-visible:ring-ring w-full"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-[10px] font-medium text-muted-foreground bg-accent px-1.5 py-0.5 rounded border border-border">
+                  <span>⌘</span>
+                  <span>K</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <NotificationsSheet>
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent">
+                    <Bell className="w-5 h-5" />
+                  </Button>
+                </NotificationsSheet>
+                
+                <ModeToggle />
+
+                <div 
+                  className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-teal-400 border border-border cursor-pointer hover:opacity-80 transition-opacity" 
+                  title={user?.nama}
+                  onClick={() => setIsProfilOpen(true)}
+                >
+                  <div className="w-full h-full rounded-full overflow-hidden">
+                    {user?.foto ? (
+                      <img src={user.foto} alt="avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.nama}`} alt="avatar" />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-          {children}
-        </main>
+            {/* Page Content */}
+            <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+              {children}
+            </main>
+
+        </div>
+
+        <ProfilModal isOpen={isProfilOpen} onClose={() => setIsProfilOpen(false)} />
+
+        <style jsx global>{`
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+          }
+        `}</style>
       </div>
-
-      <ProfilModal isOpen={isProfilOpen} onClose={() => setIsProfilOpen(false)} />
-
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #0a0a0b;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #1a1a1b;
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #2a2a2b;
-        }
-      `}</style>
-    </div>
   );
 }

@@ -46,12 +46,12 @@ export default function EditKelasPage() {
 
       if (kelasRes.ok) {
         const kelas: Kelas = await kelasRes.json();
-        setFormData({
-          namaKelas: kelas.namaKelas,
-          tahunAjaran: kelas.tahunAjaran,
-          waliKelasId: kelas.waliKelasId?.toString() || '',
-          jumlahSiswa: kelas.jumlahSiswa,
-        });
+          setFormData({
+            namaKelas: kelas.namaKelas,
+            tahunAjaran: kelas.tahunAjaran,
+            waliKelasId: kelas.waliKelasId?.toString() || 'none',
+            jumlahSiswa: kelas.jumlahSiswa,
+          });
       }
 
       if (guruRes.ok) {
@@ -69,11 +69,11 @@ export default function EditKelasPage() {
     e.preventDefault();
     setSaving(true);
 
-    try {
-      const payload = {
-        ...formData,
-        waliKelasId: formData.waliKelasId ? parseInt(formData.waliKelasId) : null,
-      };
+      try {
+        const payload = {
+          ...formData,
+          waliKelasId: formData.waliKelasId && formData.waliKelasId !== 'none' ? parseInt(formData.waliKelasId) : null,
+        };
 
       const response = await fetch(`/api/kelas?id=${params.id}`, {
         method: 'PUT',
@@ -155,9 +155,9 @@ export default function EditKelasPage() {
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih wali kelas" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Tidak ada wali kelas</SelectItem>
-                    {guruList.map((guru) => (
+                    <SelectContent>
+                      <SelectItem value="none">Tidak ada wali kelas</SelectItem>
+                      {guruList.map((guru) => (
                       <SelectItem key={guru.id} value={guru.id.toString()}>
                         {guru.nama} - {guru.mataPelajaran}
                       </SelectItem>
